@@ -879,6 +879,26 @@ a {
   color: #fff;
 }
 
+/* Memorable moment — next step after traits: serif question + single-select list */
+.onboard-main--memorable {
+  gap: var(--space-5);
+  padding-top: var(--space-2);
+}
+
+.onboard-title--memorable {
+  font-family: var(--font-serif);
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.4px;
+  color: #1c1c19;
+}
+
+.onboard-memorable-list {
+  /* inherits onboard-age-list column layout; optional tweak for longer lines */
+  padding-top: var(--space-1);
+}
+
 .onboard-memorable-list .onboard-age-option {
   align-items: flex-start;
   min-height: 0;
@@ -1054,6 +1074,57 @@ a {
   border-top-color: rgba(28, 28, 25, 0.08);
 }
 
+/* Founding member / reserve (progress + back in main header) */
+.onboard-main--reserve {
+  gap: var(--space-5);
+  padding-top: var(--space-2);
+}
+
+.onboard-reserve-copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.onboard-title--reserve {
+  font-size: 26px;
+  line-height: 1.3;
+  letter-spacing: -0.7px;
+}
+
+.onboard-reserve-visual {
+  margin: 0;
+  width: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.onboard-reserve-visual img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.onboard-footer--reserve {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-4);
+  padding-top: var(--space-3);
+}
+
+.onboard-reserve-pricing {
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.5;
+  font-weight: 500;
+  color: #6b635c;
+  letter-spacing: -0.2px;
+}
+
 /* Step 4 — letter value prop (hero edge-to-edge top; back over image) */
 
 .onboard-screen--step4 {
@@ -1154,6 +1225,26 @@ a {
   letter-spacing: -0.6px;
   font-weight: 700;
   color: #1c1c19;
+  text-align: left;
+}
+
+.onboard-step4-prose {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.55;
+  font-weight: 400;
+  color: #6b635c;
+  letter-spacing: -0.15px;
+  text-align: left;
+}
+
+.onboard-step4-footnote {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  font-weight: 500;
+  color: #8e8377;
   text-align: left;
 }
 

@@ -3,8 +3,10 @@ import { ArrowLeft, ArrowRight, CameraPlus, Check } from "@phosphor-icons/react"
 
 import postcardExplainerImage from "../assets/figma/photo-to-postcard-card.png";
 import step4HeroImage from "../assets/figma/letter-with-bookmark.png";
+import keepsakeOfferHero from "../assets/figma/keepsake-early-offer-hero.png";
+import foundingMemberReserveHero from "../assets/figma/founding-member-reserve-hero.png";
 
-const TOTAL_STEPS = 8;
+const TOTAL_STEPS = 10;
 const MAX_PHOTO_BYTES = 1024 * 1024; /* 1 MB */
 
 const AGE_OPTIONS = ["0-1 Years", "1-3 Years", "4-7 Years", "8-11 Years", "12+ Years"];
@@ -29,6 +31,12 @@ const VALUE_LETTER_BULLETS = [
   "We turn them into a letter from your dog",
   "Mailed to your home to keep forever",
 ];
+
+const KEEPSAKE_OFFER_BULLETS = [
+  "a letter from your dog, just for you",
+  "custom illustration of your dog",
+  "a dog themed bookmark",
+];
 const MAX_TRAITS = 5;
 
 const TRAIT_OPTIONS = [
@@ -44,6 +52,8 @@ const TRAIT_OPTIONS = [
   "Curious",
 ];
 
+/* … → Keepsake offer → Founding member / reserve (finish) */
+
 export default function OnboardingFlow({ onExit, onComplete }) {
   const [step, setStep] = useState(1);
   const [dogName, setDogName] = useState("");
@@ -57,6 +67,9 @@ export default function OnboardingFlow({ onExit, onComplete }) {
   const fileInputRef = useRef(null);
 
   const progress = (step / TOTAL_STEPS) * 100;
+  const isValueHeroLayout = step === 4 || step === 6 || step === 9;
+  /* Full-bleed value slides: no top progress — back on the hero */
+  const hideTopHeader = step === 4 || step === 6 || step === 9;
 
   const handleBack = () => {
     if (step > 1) {
@@ -81,7 +94,7 @@ export default function OnboardingFlow({ onExit, onComplete }) {
   const submitAge = (e) => {
     e.preventDefault();
     if (!ageRange) return;
-    setStep(4);
+    setStep(6);
   };
 
   const toggleTrait = (label) => {
@@ -99,13 +112,21 @@ export default function OnboardingFlow({ onExit, onComplete }) {
   const submitTraits = (e) => {
     e.preventDefault();
     if (traits.length < 1) return;
+    setStep(4);
+  };
+
+  const continueFromLetter = () => {
     setStep(5);
+  };
+
+  const continueFromPostcard = () => {
+    setStep(7);
   };
 
   const submitMemorableMoment = (e) => {
     e.preventDefault();
     if (!memorableMoment) return;
-    setStep(6);
+    setStep(9);
   };
 
   const handlePhotoFile = (file) => {
@@ -141,10 +162,6 @@ export default function OnboardingFlow({ onExit, onComplete }) {
   const submitPhoto = (e) => {
     e.preventDefault();
     if (!photoFile) return;
-    setStep(7);
-  };
-
-  const continueToValueLetter = () => {
     setStep(8);
   };
 
@@ -162,16 +179,27 @@ export default function OnboardingFlow({ onExit, onComplete }) {
     }
   };
 
+  const continueToReserve = () => {
+    setStep(10);
+  };
+
   const displayName = dogName.trim() || "your dog";
   const canContinueTraits = traits.length >= 1 && traits.length <= MAX_TRAITS;
 
-  const isNoStepperSlide = step === 7 || step === 8;
-
   return (
-    <div className={isNoStepperSlide ? "onboard-screen onboard-screen--step4" : "onboard-screen"}>
-      {!isNoStepperSlide && (
+    <div
+      className={
+        isValueHeroLayout ? "onboard-screen onboard-screen--step4" : "onboard-screen"
+      }
+    >
+      {!hideTopHeader && (
         <header className="onboard-header">
-          <button type="button" className="onboard-back" onClick={handleBack} aria-label={step === 1 ? "Go back to home" : "Previous step"}>
+          <button
+            type="button"
+            className="onboard-back"
+            onClick={handleBack}
+            aria-label={step === 1 ? "Go back to home" : "Previous step"}
+          >
             <ArrowLeft size={20} weight="regular" className="onboard-back-icon" />
           </button>
           <div
@@ -254,47 +282,6 @@ export default function OnboardingFlow({ onExit, onComplete }) {
 
       {step === 3 && (
         <>
-          <form id="onboard-step-age" className="onboard-main onboard-main--age" onSubmit={submitAge}>
-            <div className="onboard-step2-copy">
-              <h1 className="onboard-title">How old is {displayName}?</h1>
-              <p className="onboard-lede">This shapes how we write your dog&apos;s letter.</p>
-            </div>
-            <div className="onboard-age-list" role="group" aria-label="Dog age">
-              {AGE_OPTIONS.map((label) => {
-                const selected = ageRange === label;
-                return (
-                  <button
-                    key={label}
-                    type="button"
-                    className={selected ? "onboard-age-option is-selected" : "onboard-age-option"}
-                    onClick={() => setAgeRange(label)}
-                    aria-pressed={selected}
-                  >
-                    <span className="onboard-age-label">{label}</span>
-                    {selected ? (
-                      <Check className="onboard-age-check" size={20} weight="bold" aria-hidden="true" />
-                    ) : null}
-                  </button>
-                );
-              })}
-            </div>
-          </form>
-          <footer className="onboard-footer">
-            <button
-              type="submit"
-              className="onboard-continue"
-              form="onboard-step-age"
-              disabled={!ageRange}
-            >
-              Continue
-              <ArrowRight size={18} weight="bold" className="onboard-continue-icon" />
-            </button>
-          </footer>
-        </>
-      )}
-
-      {step === 4 && (
-        <>
           <form id="onboard-step-traits" className="onboard-main onboard-main--traits" onSubmit={submitTraits}>
             <div className="onboard-step3-copy">
               <h1 className="onboard-title">What&apos;s {displayName} like?</h1>
@@ -334,29 +321,59 @@ export default function OnboardingFlow({ onExit, onComplete }) {
         </>
       )}
 
+      {step === 4 && (
+        <div className="onboard-step4 onboard-step4--letter">
+          <div className="onboard-step4-hero-wrap">
+            <button
+              type="button"
+              className="onboard-step4-back"
+              onClick={handleBack}
+              aria-label="Previous step"
+            >
+              <ArrowLeft size={20} weight="regular" className="onboard-step4-back-icon" />
+            </button>
+            <figure className="onboard-step4-hero" aria-hidden="false">
+              <img src={step4HeroImage} alt="A dog beside a personal letter on the sofa" />
+            </figure>
+          </div>
+          <div className="onboard-step4-content">
+            <h2 className="onboard-step4-title">A letter from your dog, written just for you.</h2>
+            <ul className="onboard-step4-list" role="list">
+              {VALUE_LETTER_BULLETS.map((line) => (
+                <li key={line} className="onboard-step4-item">
+                  <span className="onboard-step4-check" aria-hidden="true">
+                    <Check className="onboard-step4-check-glyph" size={14} weight="bold" />
+                  </span>
+                  <span className="onboard-step4-text">{line}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <footer className="onboard-step4-footer">
+            <button type="button" className="onboard-continue" onClick={continueFromLetter}>
+              Continue
+              <ArrowRight size={18} weight="bold" className="onboard-continue-icon" />
+            </button>
+          </footer>
+        </div>
+      )}
+
       {step === 5 && (
         <>
-          <form
-            id="onboard-step-memorable"
-            className="onboard-main onboard-main--age"
-            onSubmit={submitMemorableMoment}
-          >
-            <h1 className="onboard-title">
-              What&apos;s one thing {displayName} does you never want to forget?
-            </h1>
-            <div
-              className="onboard-age-list onboard-memorable-list"
-              role="group"
-              aria-label="A moment to remember"
-            >
-              {MEMORABLE_MOMENT_OPTIONS.map((label) => {
-                const selected = memorableMoment === label;
+          <form id="onboard-step-age" className="onboard-main onboard-main--age" onSubmit={submitAge}>
+            <div className="onboard-step2-copy">
+              <h1 className="onboard-title">How old is {displayName}?</h1>
+              <p className="onboard-lede">This shapes how we write your dog&apos;s letter.</p>
+            </div>
+            <div className="onboard-age-list" role="group" aria-label="Dog age">
+              {AGE_OPTIONS.map((label) => {
+                const selected = ageRange === label;
                 return (
                   <button
                     key={label}
                     type="button"
                     className={selected ? "onboard-age-option is-selected" : "onboard-age-option"}
-                    onClick={() => setMemorableMoment(label)}
+                    onClick={() => setAgeRange(label)}
                     aria-pressed={selected}
                   >
                     <span className="onboard-age-label">{label}</span>
@@ -369,12 +386,7 @@ export default function OnboardingFlow({ onExit, onComplete }) {
             </div>
           </form>
           <footer className="onboard-footer">
-            <button
-              type="submit"
-              className="onboard-continue"
-              form="onboard-step-memorable"
-              disabled={!memorableMoment}
-            >
+            <button type="submit" className="onboard-continue" form="onboard-step-age" disabled={!ageRange}>
               Continue
               <ArrowRight size={18} weight="bold" className="onboard-continue-icon" />
             </button>
@@ -383,6 +395,46 @@ export default function OnboardingFlow({ onExit, onComplete }) {
       )}
 
       {step === 6 && (
+        <div className="onboard-step4 onboard-step4--postcard">
+          <div className="onboard-step4-hero-wrap">
+            <button
+              type="button"
+              className="onboard-step4-back"
+              onClick={handleBack}
+              aria-label="Previous step"
+            >
+              <ArrowLeft size={20} weight="regular" className="onboard-step4-back-icon" />
+            </button>
+            <figure className="onboard-step4-hero" aria-hidden="false">
+              <img
+                src={postcardExplainerImage}
+                alt="Your photo becomes a custom illustrated postcard of your dog"
+              />
+            </figure>
+          </div>
+          <div className="onboard-step4-content">
+            <h2 className="onboard-step4-title">A custom illustrated postcard of your dog.</h2>
+            <ul className="onboard-step4-list" role="list">
+              {POSTCARD_BULLETS.map((line) => (
+                <li key={line} className="onboard-step4-item">
+                  <span className="onboard-step4-check" aria-hidden="true">
+                    <Check className="onboard-step4-check-glyph" size={14} weight="bold" />
+                  </span>
+                  <span className="onboard-step4-text">{line}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <footer className="onboard-step4-footer">
+            <button type="button" className="onboard-continue" onClick={continueFromPostcard}>
+              Continue
+              <ArrowRight size={18} weight="bold" className="onboard-continue-icon" />
+            </button>
+          </footer>
+        </div>
+      )}
+
+      {step === 7 && (
         <>
           <form id="onboard-step-photo" className="onboard-main onboard-main--photo" onSubmit={submitPhoto}>
             <div className="onboard-step2-copy">
@@ -432,23 +484,80 @@ export default function OnboardingFlow({ onExit, onComplete }) {
         </>
       )}
 
-      {step === 7 && (
-        <div className="onboard-step4 onboard-step4--postcard">
+      {step === 8 && (
+        <>
+          <form
+            id="onboard-step-memorable"
+            className="onboard-main onboard-main--memorable"
+            onSubmit={submitMemorableMoment}
+          >
+            <h1 className="onboard-title onboard-title--memorable">
+              What&apos;s one thing {displayName} does you never want to forget?
+            </h1>
+            <div
+              className="onboard-age-list onboard-memorable-list"
+              role="group"
+              aria-label="A moment to remember"
+            >
+              {MEMORABLE_MOMENT_OPTIONS.map((label) => {
+                const selected = memorableMoment === label;
+                return (
+                  <button
+                    key={label}
+                    type="button"
+                    className={selected ? "onboard-age-option is-selected" : "onboard-age-option"}
+                    onClick={() => setMemorableMoment(label)}
+                    aria-pressed={selected}
+                  >
+                    <span className="onboard-age-label">{label}</span>
+                    {selected ? (
+                      <Check className="onboard-age-check" size={20} weight="bold" aria-hidden="true" />
+                    ) : null}
+                  </button>
+                );
+              })}
+            </div>
+          </form>
+          <footer className="onboard-footer">
+            <button
+              type="submit"
+              className="onboard-continue"
+              form="onboard-step-memorable"
+              disabled={!memorableMoment}
+            >
+              Continue
+              <ArrowRight size={18} weight="bold" className="onboard-continue-icon" />
+            </button>
+          </footer>
+        </>
+      )}
+
+      {step === 9 && (
+        <div className="onboard-step4 onboard-step4--keepsake">
           <div className="onboard-step4-hero-wrap">
-            <button type="button" className="onboard-step4-back" onClick={handleBack} aria-label="Previous step">
+            <button
+              type="button"
+              className="onboard-step4-back"
+              onClick={handleBack}
+              aria-label="Previous step"
+            >
               <ArrowLeft size={20} weight="regular" className="onboard-step4-back-icon" />
             </button>
             <figure className="onboard-step4-hero" aria-hidden="false">
               <img
-                src={postcardExplainerImage}
-                alt="Your photo becomes a custom illustrated postcard of your dog"
+                src={keepsakeOfferHero}
+                alt="Letter, illustrated postcard, and dog bookmark on a table"
               />
             </figure>
           </div>
           <div className="onboard-step4-content">
-            <h2 className="onboard-step4-title">A custom illustrated postcard of your dog.</h2>
+            <h2 className="onboard-step4-title">A keepsake you&apos;ll hold onto for years.</h2>
+            <p className="onboard-step4-prose">
+              The little moments with your dog don&apos;t stay little forever. Each month, we turn them
+              into something personal and worth keeping.
+            </p>
             <ul className="onboard-step4-list" role="list">
-              {POSTCARD_BULLETS.map((line) => (
+              {KEEPSAKE_OFFER_BULLETS.map((line) => (
                 <li key={line} className="onboard-step4-item">
                   <span className="onboard-step4-check" aria-hidden="true">
                     <Check className="onboard-step4-check-glyph" size={14} weight="bold" />
@@ -457,46 +566,46 @@ export default function OnboardingFlow({ onExit, onComplete }) {
                 </li>
               ))}
             </ul>
+            <p className="onboard-step4-footnote">Every month is different. Made just for you.</p>
           </div>
           <footer className="onboard-step4-footer">
-            <button type="button" className="onboard-continue" onClick={continueToValueLetter}>
-              Continue
+            <button type="button" className="onboard-continue" onClick={continueToReserve}>
+              See early member offer
               <ArrowRight size={18} weight="bold" className="onboard-continue-icon" />
             </button>
           </footer>
         </div>
       )}
 
-      {step === 8 && (
-        <div className="onboard-step4">
-          <div className="onboard-step4-hero-wrap">
-            <button type="button" className="onboard-step4-back" onClick={handleBack} aria-label="Previous step">
-              <ArrowLeft size={20} weight="regular" className="onboard-step4-back-icon" />
-            </button>
-            <figure className="onboard-step4-hero" aria-hidden="false">
-              <img src={step4HeroImage} alt="A dog beside a personal letter on the sofa" />
+      {step === 10 && (
+        <>
+          <form id="onboard-step-reserve" className="onboard-main onboard-main--reserve" onSubmit={(e) => { e.preventDefault(); finishOnboarding(); }}>
+            <div className="onboard-reserve-copy">
+              <h1 className="onboard-title onboard-title--reserve">
+                We&apos;re writing letters for our first 100 dog lovers. We&apos;d love for you to be
+                one of them.
+              </h1>
+              <p className="onboard-lede">
+                No payment today. Just reserve your first letter with your card.
+              </p>
+            </div>
+            <figure className="onboard-reserve-visual" aria-hidden="false">
+              <img
+                src={foundingMemberReserveHero}
+                alt="Letter, bookmark, and illustrated postcard of your dog"
+              />
             </figure>
-          </div>
-          <div className="onboard-step4-content">
-            <h2 className="onboard-step4-title">A letter from your dog, written just for you.</h2>
-            <ul className="onboard-step4-list" role="list">
-              {VALUE_LETTER_BULLETS.map((line) => (
-                <li key={line} className="onboard-step4-item">
-                  <span className="onboard-step4-check" aria-hidden="true">
-                    <Check className="onboard-step4-check-glyph" size={14} weight="bold" />
-                  </span>
-                  <span className="onboard-step4-text">{line}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <footer className="onboard-step4-footer">
-            <button type="button" className="onboard-continue" onClick={finishOnboarding}>
-              Continue
+          </form>
+          <footer className="onboard-footer onboard-footer--reserve">
+            <p className="onboard-reserve-pricing">
+              As a founding member, your first letter is just $11, then $18/month. Cancel any time.
+            </p>
+            <button type="submit" className="onboard-continue" form="onboard-step-reserve">
+              Reserve My First Letter
               <ArrowRight size={18} weight="bold" className="onboard-continue-icon" />
             </button>
           </footer>
-        </div>
+        </>
       )}
     </div>
   );
