@@ -1506,6 +1506,120 @@ a {
   outline-color: #b05a38;
 }
 
+/* ============= Payment success (/success, Stripe success_url) ============= */
+
+.payment-success-screen {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-5);
+  background: #2b2826;
+}
+
+.payment-success-card {
+  width: 100%;
+  max-width: var(--max-page);
+  background: var(--color-card-cream);
+  border-radius: var(--radius-lg);
+  padding: var(--space-7) var(--space-5) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+  box-shadow: var(--shadow-md);
+}
+
+.payment-success-icon-wrap {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: #fde8dc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.payment-success-mark {
+  width: 72px;
+  height: auto;
+  display: block;
+}
+
+.payment-success-title {
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-sans);
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.65px;
+  color: var(--color-heading);
+}
+
+.payment-success-body {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  text-align: center;
+  font-size: 16px;
+  line-height: 1.55;
+  font-weight: 500;
+  color: #5c514c;
+  letter-spacing: -0.15px;
+}
+
+.payment-success-body p {
+  margin: 0;
+}
+
+.payment-success-email-line {
+  text-align: center;
+}
+
+.payment-success-email {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.payment-success-email:hover {
+  color: var(--color-heading);
+}
+
+.payment-success-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  margin-top: var(--space-2);
+  padding: var(--space-4) var(--space-5);
+  border: none;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  text-decoration: none;
+  cursor: pointer;
+  background: var(--color-primary-strong);
+  transition: background 0.15s ease;
+}
+
+.payment-success-cta:hover {
+  background: #a24f2a;
+}
+
+.payment-success-cta:focus-visible {
+  outline: 2px solid var(--color-primary-strong);
+  outline-offset: 3px;
+}
+
 /* ============= Responsive polish ============= */
 
 @media (min-width: 480px) {
