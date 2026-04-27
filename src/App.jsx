@@ -3,16 +3,16 @@ import DogLandingPage from "./components/DogLandingPage";
 import OnboardingFlow from "./components/OnboardingFlow";
 import PaymentSuccessPage from "./components/PaymentSuccessPage";
 
-function isPaymentSuccessPath() {
+function isPaymentConfirmationPath() {
   if (typeof window === "undefined") return false;
   const p = window.location.pathname.replace(/\/+$/, "") || "/";
-  return p === "/success";
+  return p === "/confirmation";
 }
 
 export default function App() {
   const [view, setView] = useState("landing");
 
-  if (isPaymentSuccessPath()) {
+  if (isPaymentConfirmationPath()) {
     return <PaymentSuccessPage />;
   }
 

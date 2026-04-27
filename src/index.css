@@ -1506,7 +1506,7 @@ a {
   outline-color: #b05a38;
 }
 
-/* ============= Payment success (/success, Stripe success_url) ============= */
+/* ============= Payment confirmation (/confirmation, Stripe success redirect) ============= */
 
 .payment-success-screen {
   min-height: 100vh;
