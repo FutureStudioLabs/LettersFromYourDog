@@ -1185,6 +1185,17 @@ a {
   text-align: center;
 }
 
+.onboard-sync-error {
+  margin: 0;
+  width: 100%;
+  max-width: 24rem;
+  font-size: 14px;
+  line-height: 1.45;
+  font-weight: 500;
+  color: #9c2f23;
+  text-align: center;
+}
+
 .onboard-timeline {
   list-style: none;
   width: 100%;

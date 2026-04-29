@@ -6,6 +6,13 @@ import letterValueHero from "../assets/figma/content-image.png";
 import keepsakeHeroImage from "../assets/figma/keepsake.png";
 /* Hero for step 10 only — “Reserve My First Letter” (not timeline / Save My Spot) */
 import reserveMyFirstLetterHero from "../assets/figma/desktop 1.jpeg";
+import {
+  ensureSubscriberForOnboarding,
+  getSubscriberSyncErrorMessage,
+  stripeCheckoutUrlWithReference,
+  uploadDogProfilePhoto,
+  upsertDogProfile,
+} from "../lib/subscriberSession";
 
 const STRIPE_PAYMENT_LINK = import.meta.env.VITE_STRIPE_PAYMENT_LINK?.trim() || "";
 
@@ -89,7 +96,32 @@ export default function OnboardingFlow({ onExit, onComplete }) {
   const [photoFile, setPhotoFile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
   const [photoError, setPhotoError] = useState("");
+  const [subscriberId, setSubscriberId] = useState(null);
+  const [subscriberSyncReady, setSubscriberSyncReady] = useState(false);
+  const [subscriberSyncError, setSubscriberSyncError] = useState("");
+  const [checkoutBusy, setCheckoutBusy] = useState(false);
   const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const id = await ensureSubscriberForOnboarding();
+        if (cancelled) return;
+        setSubscriberId(id);
+      } catch (e) {
+        console.error(e);
+        if (!cancelled) {
+          setSubscriberSyncError(getSubscriberSyncErrorMessage(e));
+        }
+      } finally {
+        if (!cancelled) setSubscriberSyncReady(true);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const progress = (step / TOTAL_STEPS) * 100;
   const isValueHeroLayout = step === 4 || step === 6 || step === 9;
@@ -190,7 +222,8 @@ export default function OnboardingFlow({ onExit, onComplete }) {
     setStep(8);
   };
 
-  const finishOnboarding = () => {
+  const finishOnboarding = async () => {
+    setSubscriberSyncError("");
     const payload = {
       dogName: dogName.trim(),
       breed: breed.trim(),
@@ -200,10 +233,38 @@ export default function OnboardingFlow({ onExit, onComplete }) {
       photo: photoFile,
       photoName: photoFile?.name,
     };
-    if (STRIPE_PAYMENT_LINK) {
-      window.location.assign(STRIPE_PAYMENT_LINK);
+
+    if (!subscriberId) {
       return;
     }
+
+    setCheckoutBusy(true);
+    try {
+      let photoPath = null;
+      if (photoFile) {
+        photoPath = await uploadDogProfilePhoto(subscriberId, photoFile);
+      }
+      await upsertDogProfile(subscriberId, {
+        dogName: payload.dogName,
+        breed: payload.breed,
+        ageRange: payload.ageRange,
+        traits: payload.traits /* jsonb-compatible array */,
+        memorableMoment: payload.memorableMoment,
+        photoPath,
+      });
+    } catch (e) {
+      console.error(e);
+      setCheckoutBusy(false);
+      setSubscriberSyncError(getSubscriberSyncErrorMessage(e));
+      return;
+    }
+
+    if (STRIPE_PAYMENT_LINK) {
+      window.location.assign(stripeCheckoutUrlWithReference(STRIPE_PAYMENT_LINK, subscriberId));
+      return;
+    }
+
+    setCheckoutBusy(false);
     if (typeof onComplete === "function") {
       onComplete(payload);
     }
@@ -683,10 +744,24 @@ export default function OnboardingFlow({ onExit, onComplete }) {
                 </li>
               ))}
             </ol>
+            {subscriberSyncError ? (
+              <p className="onboard-sync-error" role="alert">
+                {subscriberSyncError}
+              </p>
+            ) : null}
           </div>
           <footer className="onboard-footer onboard-footer--spot-timeline">
-            <button type="button" className="onboard-continue" onClick={finishOnboarding}>
-              Save My Spot
+            <button
+              type="button"
+              className="onboard-continue"
+              onClick={finishOnboarding}
+              disabled={!subscriberSyncReady || !subscriberId || checkoutBusy}
+            >
+              {!subscriberSyncReady
+                ? "Connecting…"
+                : checkoutBusy
+                  ? "Saving…"
+                  : "Save My Spot"}
               <ArrowRight size={18} weight="bold" className="onboard-continue-icon" />
             </button>
           </footer>
