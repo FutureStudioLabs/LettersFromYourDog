@@ -16,3 +16,6 @@ dist/
 .idea/
 .vscode/
 *.swp
+
+# Supabase CLI local cache
+supabase/.temp/

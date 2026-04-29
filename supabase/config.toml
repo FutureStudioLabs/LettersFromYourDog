@@ -1,0 +1,10 @@
+# Supabase CLI: https://supabase.com/docs/guides/cli/config
+# Run: supabase link --project-ref <your-ref>
+# Secrets (same SMTP as Dashboard → Authentication → SMTP): see .env.example
+
+[functions.send-transactional-email]
+verify_jwt = true
+
+# Stripe calls this with Stripe-Signature only — no Supabase JWT
+[functions.stripe-webhook]
+verify_jwt = false

@@ -13,6 +13,8 @@ import {
   uploadDogProfilePhoto,
   upsertDogProfile,
 } from "../lib/subscriberSession";
+import { isPostHogConfigured } from "../lib/posthog";
+import { PostHogOnboardingAnalytics } from "../lib/posthogAnalytics";
 
 const STRIPE_PAYMENT_LINK = import.meta.env.VITE_STRIPE_PAYMENT_LINK?.trim() || "";
 
@@ -287,6 +289,9 @@ export default function OnboardingFlow({ onExit, onComplete }) {
         isValueHeroLayout ? "onboard-screen onboard-screen--step4" : "onboard-screen"
       }
     >
+      {isPostHogConfigured ? (
+        <PostHogOnboardingAnalytics step={step} subscriberId={subscriberId} />
+      ) : null}
       {!hideTopHeader && (
         <header className="onboard-header">
           <button
@@ -418,31 +423,33 @@ export default function OnboardingFlow({ onExit, onComplete }) {
 
       {step === 4 && (
         <div className="onboard-step4 onboard-step4--letter">
-          <div className="onboard-step4-hero-wrap">
-            <button
-              type="button"
-              className="onboard-step4-back"
-              onClick={handleBack}
-              aria-label="Previous step"
-            >
-              <ArrowLeft size={20} weight="regular" className="onboard-step4-back-icon" />
-            </button>
-            <figure className="onboard-step4-hero" aria-hidden="false">
-              <img src={letterValueHero} alt="A dog beside a personal letter on the sofa" />
-            </figure>
-          </div>
-          <div className="onboard-step4-content">
-            <h2 className="onboard-step4-title">A letter from your dog, written just for you.</h2>
-            <ul className="onboard-step4-list" role="list">
-              {VALUE_LETTER_BULLETS.map((line) => (
-                <li key={line} className="onboard-step4-item">
-                  <span className="onboard-step4-check" aria-hidden="true">
-                    <Check className="onboard-step4-check-glyph" size={14} weight="bold" />
-                  </span>
-                  <span className="onboard-step4-text">{line}</span>
-                </li>
-              ))}
-            </ul>
+          <div className="onboard-step4-body">
+            <div className="onboard-step4-hero-wrap">
+              <button
+                type="button"
+                className="onboard-step4-back"
+                onClick={handleBack}
+                aria-label="Previous step"
+              >
+                <ArrowLeft size={20} weight="regular" className="onboard-step4-back-icon" />
+              </button>
+              <figure className="onboard-step4-hero" aria-hidden="false">
+                <img src={letterValueHero} alt="A dog beside a personal letter on the sofa" />
+              </figure>
+            </div>
+            <div className="onboard-step4-content">
+              <h2 className="onboard-step4-title">A letter from your dog, written just for you.</h2>
+              <ul className="onboard-step4-list" role="list">
+                {VALUE_LETTER_BULLETS.map((line) => (
+                  <li key={line} className="onboard-step4-item">
+                    <span className="onboard-step4-check" aria-hidden="true">
+                      <Check className="onboard-step4-check-glyph" size={14} weight="bold" />
+                    </span>
+                    <span className="onboard-step4-text">{line}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
           <footer className="onboard-step4-footer">
             <button type="button" className="onboard-continue" onClick={continueFromLetter}>
@@ -491,34 +498,38 @@ export default function OnboardingFlow({ onExit, onComplete }) {
 
       {step === 6 && (
         <div className="onboard-step4 onboard-step4--postcard">
-          <div className="onboard-step4-hero-wrap">
-            <button
-              type="button"
-              className="onboard-step4-back"
-              onClick={handleBack}
-              aria-label="Previous step"
-            >
-              <ArrowLeft size={20} weight="regular" className="onboard-step4-back-icon" />
-            </button>
-            <figure className="onboard-step4-hero" aria-hidden="false">
-              <img
-                src={customPostcardImage}
-                alt="Your photo becomes a custom illustrated postcard of your dog"
-              />
-            </figure>
-          </div>
-          <div className="onboard-step4-content">
-            <h2 className="onboard-step4-title">A custom illustrated postcard of your dog.</h2>
-            <ul className="onboard-step4-list" role="list">
-              {POSTCARD_BULLETS.map((line) => (
-                <li key={line} className="onboard-step4-item">
-                  <span className="onboard-step4-check" aria-hidden="true">
-                    <Check className="onboard-step4-check-glyph" size={14} weight="bold" />
-                  </span>
-                  <span className="onboard-step4-text">{line}</span>
-                </li>
-              ))}
-            </ul>
+          <div className="onboard-step4-body">
+            <div className="onboard-step4-hero-wrap">
+              <button
+                type="button"
+                className="onboard-step4-back"
+                onClick={handleBack}
+                aria-label="Previous step"
+              >
+                <ArrowLeft size={20} weight="regular" className="onboard-step4-back-icon" />
+              </button>
+              <figure className="onboard-step4-hero onboard-step4-hero--postcard" aria-hidden="false">
+                <div className="onboard-step4-hero-frame">
+                  <img
+                    src={customPostcardImage}
+                    alt="Your photo becomes a custom illustrated postcard of your dog"
+                  />
+                </div>
+              </figure>
+            </div>
+            <div className="onboard-step4-content">
+              <h2 className="onboard-step4-title">A custom illustrated postcard of your dog.</h2>
+              <ul className="onboard-step4-list" role="list">
+                {POSTCARD_BULLETS.map((line) => (
+                  <li key={line} className="onboard-step4-item">
+                    <span className="onboard-step4-check" aria-hidden="true">
+                      <Check className="onboard-step4-check-glyph" size={14} weight="bold" />
+                    </span>
+                    <span className="onboard-step4-text">{line}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
           <footer className="onboard-step4-footer">
             <button type="button" className="onboard-continue" onClick={continueFromPostcard}>
@@ -629,39 +640,43 @@ export default function OnboardingFlow({ onExit, onComplete }) {
 
       {step === 9 && (
         <div className="onboard-step4 onboard-step4--keepsake">
-          <div className="onboard-step4-hero-wrap">
-            <button
-              type="button"
-              className="onboard-step4-back"
-              onClick={handleBack}
-              aria-label="Previous step"
-            >
-              <ArrowLeft size={20} weight="regular" className="onboard-step4-back-icon" />
-            </button>
-            <figure className="onboard-step4-hero" aria-hidden="false">
-              <img
-                src={keepsakeHeroImage}
-                alt="Letter, illustrated postcard, and dog bookmark on a table"
-              />
-            </figure>
-          </div>
-          <div className="onboard-step4-content">
-            <h2 className="onboard-step4-title">A keepsake you&apos;ll hold onto for years.</h2>
-            <p className="onboard-step4-prose">
-              The little moments with your dog don&apos;t stay little forever. Each month, we turn them
-              into something personal and worth keeping.
-            </p>
-            <ul className="onboard-step4-list" role="list">
-              {KEEPSAKE_OFFER_BULLETS.map((line) => (
-                <li key={line} className="onboard-step4-item">
-                  <span className="onboard-step4-check" aria-hidden="true">
-                    <Check className="onboard-step4-check-glyph" size={14} weight="bold" />
-                  </span>
-                  <span className="onboard-step4-text">{line}</span>
-                </li>
-              ))}
-            </ul>
-            <p className="onboard-step4-footnote">Every month is different. Made just for you.</p>
+          <div className="onboard-step4-body">
+            <div className="onboard-step4-hero-wrap">
+              <button
+                type="button"
+                className="onboard-step4-back"
+                onClick={handleBack}
+                aria-label="Previous step"
+              >
+                <ArrowLeft size={20} weight="regular" className="onboard-step4-back-icon" />
+              </button>
+              <figure className="onboard-step4-hero onboard-step4-hero--keepsake" aria-hidden="false">
+                <div className="onboard-step4-hero-frame">
+                  <img
+                    src={keepsakeHeroImage}
+                    alt="Letter, illustrated postcard, and dog bookmark on a table"
+                  />
+                </div>
+              </figure>
+            </div>
+            <div className="onboard-step4-content">
+              <h2 className="onboard-step4-title">A keepsake you&apos;ll hold onto for years.</h2>
+              <p className="onboard-step4-prose">
+                The little moments with your dog don&apos;t stay little forever. Each month, we turn them
+                into something personal and worth keeping.
+              </p>
+              <ul className="onboard-step4-list" role="list">
+                {KEEPSAKE_OFFER_BULLETS.map((line) => (
+                  <li key={line} className="onboard-step4-item">
+                    <span className="onboard-step4-check" aria-hidden="true">
+                      <Check className="onboard-step4-check-glyph" size={14} weight="bold" />
+                    </span>
+                    <span className="onboard-step4-text">{line}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="onboard-step4-footnote">Every month is different. Made just for you.</p>
+            </div>
           </div>
           <footer className="onboard-step4-footer">
             <button type="button" className="onboard-continue" onClick={continueToReserve}>

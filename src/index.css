@@ -42,10 +42,9 @@
 
   /* Onboarding: shared hero / image block height (Figma) */
   --onboard-image-height: 375px;
-  /* Postcard value step — taller hero for custom.png */
-  --onboard-image-height-postcard: 460px;
-  /* Keepsake value step — taller hero for keepsake.png */
-  --onboard-image-height-keepsake: 460px;
+  /* Postcard / keepsake — framed hero */
+  --onboard-image-height-postcard: 340px;
+  --onboard-image-height-keepsake: 340px;
 }
 
 * {
@@ -1327,13 +1326,20 @@ a {
   flex-direction: column;
   min-height: 0;
   width: 100%;
+  overflow: hidden;
+}
+
+.onboard-step4-body {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: contain;
 }
 
 .onboard-step4--postcard .onboard-step4-hero {
-  background: #efe8dc;
   flex: 0 0 var(--onboard-image-height-postcard);
   min-height: var(--onboard-image-height-postcard);
   height: var(--onboard-image-height-postcard);
@@ -1411,6 +1417,40 @@ a {
   min-height: 100%;
   min-width: 0;
   object-fit: cover;
+  object-position: center;
+}
+
+.onboard-step4-hero.onboard-step4-hero--postcard,
+.onboard-step4-hero.onboard-step4-hero--keepsake {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 0;
+}
+
+.onboard-step4-hero-frame {
+  box-sizing: border-box;
+  flex: 1 1 0;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4) var(--space-5);
+  background: #f9edde;
+}
+
+.onboard-step4-hero.onboard-step4-hero--postcard img,
+.onboard-step4-hero.onboard-step4-hero--keepsake img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  min-width: 0;
+  min-height: 0;
+  align-self: center;
+  object-fit: contain;
   object-position: center;
 }
 
