@@ -7,8 +7,8 @@
  *
  * Secrets: STRIPE_SECRET_KEY (sk_...), STRIPE_WEBHOOK_SECRET (whsec_...)
  *
- * Payment Link must collect shipping if you want shipping_* filled (Stripe →
- * Payment Link → After payment → Customer information → Shipping address).
+ * Payment Link: enable shipping and/or billing address collection. If only billing
+ * is collected, we still map customer_details.address into shipping_* columns.
  *
  * client_reference_id on the Checkout Session must be the subscribers.id UUID
  * (already appended when redirecting from the app).
@@ -96,7 +96,15 @@ Deno.serve(async (req) => {
             ? session.subscription
             : session.subscription?.id ?? null;
 
-        const addr = session.shipping_details?.address;
+        const ship = session.shipping_details?.address;
+        const bill = session.customer_details?.address;
+        /* Prefer Stripe shipping; many Payment Links only collect billing → use customer_details.address */
+        const addr =
+          ship?.line1 || ship?.postal_code
+            ? ship
+            : bill?.line1 || bill?.postal_code
+              ? bill
+              : ship ?? bill ?? undefined;
 
         const updateRow: Record<string, unknown> = {
           status: "active",
