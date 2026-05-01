@@ -5,7 +5,7 @@
  *   Table: public.subscribers
  *   Events: INSERT, UPDATE
  *   URL: https://<PROJECT_REF>.supabase.co/functions/v1/subscriber-welcome-email
- *   HTTP header: x-webhook-secret: <same value as secret SUBSCRIBER_WELCOME_WEBHOOK_SECRET>
+ *   HTTP header: x-webhook-secret: <SUBSCRIBER_WELCOME_WEBHOOK_SECRET> (do not use Authorization Bearer for this secret)
  *
  * Sends only when the row is "checkout-complete shaped": status active + real customer email
  * (not the onboarding placeholder). Idempotent via email_messages (template welcome_checkout_completed).
@@ -221,11 +221,7 @@ Deno.serve(async (req) => {
     return new Response("Method not allowed", { status: 405 });
   }
 
-  const expected = Deno.env.get("SUBSCRIBER_WELCOME_WEBHOOK_SECRET");
-  const provided =
-    req.headers.get("x-webhook-secret")?.trim() ??
-    req.headers.get("Authorization")?.replace(/^Bearer\s+/i, "").trim() ??
-    "";
+  const provided = req.headers.get("x-webhook-secret")?.trim() ?? "";
 
   if (!expected) {
     console.error(
@@ -239,7 +235,7 @@ Deno.serve(async (req) => {
 
   if (provided !== expected) {
     console.warn(
-      "[subscriber-welcome-email] 401: x-webhook-secret header missing or does not match SUBSCRIBER_WELCOME_WEBHOOK_SECRET",
+      "[subscriber-welcome-email] 401: x-webhook-secret missing or wrong (do not put the secret in Authorization Bearer)",
     );
     return new Response("Unauthorized", { status: 401 });
   }

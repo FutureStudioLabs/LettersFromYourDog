@@ -5,10 +5,8 @@
  *   URL: https://<PROJECT_REF>.supabase.co/functions/v1/stripe-webhook
  *   Events: checkout.session.completed
  *
- * Secrets: STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET
- *
- * Welcome email is handled by the separate Edge Function `subscriber-welcome-email`,
- * triggered by a Database Webhook on `public.subscribers` (INSERT/UPDATE).
+ * Secrets: STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, SUBSCRIBER_WELCOME_WEBHOOK_SECRET
+ * (welcome email is invoked over HTTP to `subscriber-welcome-email`; same secret as DB Webhook header).
  *
  * Payment Link: enable shipping and/or billing address collection. If only billing
  * is collected, we still map customer_details.address into shipping_* columns.
@@ -147,6 +145,46 @@ Deno.serve(async (req) => {
               hint: "Open Checkout Session in Stripe → verify client_reference_id equals subscribers.id. App must redirect with ?client_reference_id=<uuid> on the Payment Link.",
             }),
           );
+        } else if (email) {
+          const welcomeSecret = Deno.env.get("SUBSCRIBER_WELCOME_WEBHOOK_SECRET");
+          if (!welcomeSecret) {
+            console.warn(
+              "SUBSCRIBER_WELCOME_WEBHOOK_SECRET missing — cannot invoke subscriber-welcome-email",
+            );
+          } else {
+            try {
+              const welcomeUrl = `${supabaseUrl.replace(/\/$/, "")}/functions/v1/subscriber-welcome-email`;
+              const res = await fetch(welcomeUrl, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  "x-webhook-secret": welcomeSecret,
+                },
+                body: JSON.stringify({
+                  type: "UPDATE",
+                  schema: "public",
+                  table: "subscribers",
+                  record: {
+                    id: ref,
+                    email,
+                    full_name: fullName,
+                    status: "active",
+                  },
+                  /* Synthetic prior row so transitionIntoWelcomable accepts Stripe-only path */
+                  old_record: {
+                    status: "incomplete",
+                    email: "synthetic@pending.lettersfromyourdog.local",
+                  },
+                }),
+              });
+              const bodyText = await res.text();
+              console.info(
+                `subscriber-welcome-email HTTP ${res.status}: ${bodyText.slice(0, 300)}`,
+              );
+            } catch (e) {
+              console.error("subscriber-welcome-email invoke error:", e);
+            }
+          }
         }
       }
     }
