@@ -1,3 +1,4 @@
+import React from "react";
 import { PostHogProvider } from "posthog-js/react";
 
 const apiKey = import.meta.env.VITE_PUBLIC_POSTHOG_KEY?.trim() ?? "";
