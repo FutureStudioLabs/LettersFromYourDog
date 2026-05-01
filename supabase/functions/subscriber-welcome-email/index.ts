@@ -207,8 +207,8 @@ async function sendWelcomeIfNeeded(
         status: "failed",
         last_error: msg,
       });
-  } catch {
-    /* ignore */
+    } catch {
+      /* ignore */
     }
   }
 }
@@ -221,6 +221,7 @@ Deno.serve(async (req) => {
     return new Response("Method not allowed", { status: 405 });
   }
 
+  const expected = Deno.env.get("SUBSCRIBER_WELCOME_WEBHOOK_SECRET");
   const provided = req.headers.get("x-webhook-secret")?.trim() ?? "";
 
   if (!expected) {
