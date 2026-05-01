@@ -47,7 +47,6 @@ const VALUE_LETTER_BULLETS = [
 const KEEPSAKE_OFFER_BULLETS = [
   "a letter from your dog, just for you",
   "custom illustration of your dog",
-  "a dog themed bookmark",
 ];
 const MAX_TRAITS = 5;
 

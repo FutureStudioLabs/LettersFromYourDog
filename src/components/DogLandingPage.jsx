@@ -4,8 +4,8 @@ import { CaretDown, HandHeart, PawPrint } from "@phosphor-icons/react";
 import dogsFooterStrip from "../assets/figma/dogs-footer-strip.png";
 import handshakeCta from "../assets/figma/handshake-cta.png";
 import heroMainImage from "../assets/figma/gemini-generated-image.png";
-import letterWithBookmark from "../assets/figma/letter-with-bookmark.png";
-import photoToPostcardCard from "../assets/figma/photo-to-postcard-card.png";
+import letterWithBookmark from "../assets/figma/dim.jpeg";
+import photoToPostcardCard from "../assets/figma/pim.jpeg";
 
 const FAQS = [
   {
@@ -83,7 +83,7 @@ export default function DogLandingPage({ onGetStarted }) {
           </div>
 
           <figure className="feature-image-wrap">
-            <img src={letterWithBookmark} alt="A sample dog letter and illustrated bookmark" />
+            <img src={letterWithBookmark} alt="A sample dog letter and illustrated postcard" />
           </figure>
 
           <div className="feature-benefits">

@@ -1567,13 +1567,14 @@ a {
   align-items: center;
   justify-content: center;
   padding: var(--space-5);
-  background: #2b2826;
+  background: var(--color-page);
 }
 
 .payment-success-card {
   width: 100%;
   max-width: var(--max-page);
-  background: var(--color-card-cream);
+  background: var(--color-card-soft);
+  border: 1px solid rgba(194, 102, 66, 0.12);
   border-radius: var(--radius-lg);
   padding: var(--space-7) var(--space-5) var(--space-6);
   display: flex;
@@ -1587,7 +1588,8 @@ a {
   width: 88px;
   height: 88px;
   border-radius: 50%;
-  background: #fde8dc;
+  background: rgba(194, 102, 66, 0.12);
+  border: 1px solid rgba(194, 102, 66, 0.18);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1628,19 +1630,31 @@ a {
   margin: 0;
 }
 
-.payment-success-email-line {
+.payment-success-contact {
+  padding: var(--space-4) var(--space-5);
+  margin: 0;
   text-align: center;
+  background: var(--color-card-cream);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(194, 102, 66, 0.18);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset;
+  color: #4a433e;
+  line-height: 1.55;
 }
 
 .payment-success-email {
-  color: inherit;
-  font-weight: 600;
+  color: var(--color-primary-strong);
+  font-weight: 700;
   text-decoration: underline;
-  text-underline-offset: 2px;
+  text-decoration-color: rgba(179, 88, 47, 0.42);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1.5px;
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
 }
 
 .payment-success-email:hover {
-  color: var(--color-heading);
+  color: #9a4a26;
+  text-decoration-color: #9a4a26;
 }
 
 .payment-success-cta {
