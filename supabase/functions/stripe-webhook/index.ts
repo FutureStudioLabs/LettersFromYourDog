@@ -45,7 +45,7 @@ Deno.serve(async (req) => {
   const body = await req.text();
   let event: Stripe.Event;
   try {
-    event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+    event = await stripe.webhooks.constructEventAsync(body, signature, webhookSecret);
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     console.error("Webhook signature error:", msg);
