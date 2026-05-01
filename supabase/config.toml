@@ -8,3 +8,7 @@ verify_jwt = true
 # Stripe calls this with Stripe-Signature only — no Supabase JWT
 [functions.stripe-webhook]
 verify_jwt = false
+
+# Database Webhook (HTTP hook with x-webhook-secret); not a user JWT
+[functions.subscriber-welcome-email]
+verify_jwt = false

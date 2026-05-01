@@ -5,7 +5,10 @@
  *   URL: https://<PROJECT_REF>.supabase.co/functions/v1/stripe-webhook
  *   Events: checkout.session.completed
  *
- * Secrets: STRIPE_SECRET_KEY (sk_...), STRIPE_WEBHOOK_SECRET (whsec_...)
+ * Secrets: STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET
+ *
+ * Welcome email is handled by the separate Edge Function `subscriber-welcome-email`,
+ * triggered by a Database Webhook on `public.subscribers` (INSERT/UPDATE).
  *
  * Payment Link: enable shipping and/or billing address collection. If only billing
  * is collected, we still map customer_details.address into shipping_* columns.
