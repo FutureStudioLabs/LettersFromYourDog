@@ -153,14 +153,19 @@ async function sendWelcomeIfNeeded(
   const smtpUser = Deno.env.get("SMTP_USERNAME") ?? Deno.env.get("SMTP_USER") ?? "";
   const smtpPass = Deno.env.get("SMTP_PASSWORD") ?? Deno.env.get("SMTP_PASS") ?? "";
   const from =
-    Deno.env.get("SMTP_FROM") ?? "Letters From Your Dog <hello@lettersfromyourdog.com>";
+    Deno.env.get("SMTP_FROM") ??
+    "Letters From Your Dog <team@lettersfromyourdog.com>";
 
   if (!host || !smtpUser || !smtpPass) {
     console.warn(
-      "welcome email skipped: set SMTP_* Edge secrets (same as send-transactional-email)",
+      `[subscriber-welcome-email] SMTP incomplete: host=${Boolean(host)} user=${Boolean(
+        smtpUser,
+      )} password=${Boolean(smtpPass)} — Auth → Email → SMTP does not copy into Edge secrets; set SMTP_PASSWORD (and SMTP_FROM) under Project Settings → Edge Functions → Secrets`,
     );
     return;
   }
+
+  console.info(`[subscriber-welcome-email] sending welcome to ${toEmail} via ${host}`);
 
   const firstName = firstNameFromFullName(fullName);
   const subject = "You're in — welcome to Letters From Your Dog 🐾";
@@ -202,13 +207,16 @@ async function sendWelcomeIfNeeded(
         status: "failed",
         last_error: msg,
       });
-    } catch {
-      /* ignore */
+  } catch {
+    /* ignore */
     }
   }
 }
 
 Deno.serve(async (req) => {
+  const url = new URL(req.url);
+  console.info(`[subscriber-welcome-email] ${req.method} ${url.pathname}`);
+
   if (req.method !== "POST") {
     return new Response("Method not allowed", { status: 405 });
   }
@@ -218,7 +226,21 @@ Deno.serve(async (req) => {
     req.headers.get("x-webhook-secret")?.trim() ??
     req.headers.get("Authorization")?.replace(/^Bearer\s+/i, "").trim() ??
     "";
-  if (!expected || provided !== expected) {
+
+  if (!expected) {
+    console.error(
+      "[subscriber-welcome-email] SUBSCRIBER_WELCOME_WEBHOOK_SECRET is not set on the project — run: supabase secrets set SUBSCRIBER_WELCOME_WEBHOOK_SECRET=... and add the same value as HTTP header x-webhook-secret on the Database Webhook",
+    );
+    return new Response(
+      JSON.stringify({ error: "Webhook secret not configured on Edge Function" }),
+      { status: 500, headers: { "Content-Type": "application/json" } },
+    );
+  }
+
+  if (provided !== expected) {
+    console.warn(
+      "[subscriber-welcome-email] 401: x-webhook-secret header missing or does not match SUBSCRIBER_WELCOME_WEBHOOK_SECRET",
+    );
     return new Response("Unauthorized", { status: 401 });
   }
 
@@ -265,6 +287,7 @@ Deno.serve(async (req) => {
   }
 
   if (!transitionIntoWelcomable(payload.type, record, old_record)) {
+    console.info("[subscriber-welcome-email] skipped: row not transitioning into active+real-email (e.g. stub insert or minor update)");
     return new Response(JSON.stringify({ ok: true, skipped: "not_checkout_transition" }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
@@ -277,6 +300,8 @@ Deno.serve(async (req) => {
 
   const admin = createClient(supabaseUrl, serviceRole);
   await sendWelcomeIfNeeded(admin, id, email, fullName);
+
+  console.info(`[subscriber-welcome-email] finished processing subscriber ${id}`);
 
   return new Response(JSON.stringify({ ok: true }), {
     status: 200,
