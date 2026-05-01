@@ -74,7 +74,12 @@ Deno.serve(async (req) => {
 
       if (!ref || !UUID_RE.test(ref)) {
         console.warn(
-          "checkout.session.completed missing or invalid client_reference_id (expected subscribers UUID)",
+          JSON.stringify({
+            message: "checkout.session.completed missing or invalid client_reference_id",
+            checkout_session_id: session.id,
+            client_reference_id: ref ?? null,
+            hint: "Payment must start from your app so the link includes ?client_reference_id=<subscribers.id>.",
+          }),
         );
       } else {
         const emailRaw =
@@ -108,7 +113,11 @@ Deno.serve(async (req) => {
         if (addr?.postal_code) updateRow.shipping_zip = addr.postal_code;
         if (addr?.country) updateRow.shipping_country = addr.country;
 
-        const { error: upErr } = await admin.from("subscribers").update(updateRow).eq("id", ref);
+        const { data: updatedRows, error: upErr } = await admin
+          .from("subscribers")
+          .update(updateRow)
+          .eq("id", ref)
+          .select("id");
 
         if (upErr) {
           console.error("subscribers update error:", upErr);
@@ -116,6 +125,17 @@ Deno.serve(async (req) => {
             status: 500,
             headers: { "Content-Type": "application/json" },
           });
+        }
+
+        if (!updatedRows?.length) {
+          console.error(
+            JSON.stringify({
+              message: "subscribers update matched 0 rows",
+              client_reference_id: ref,
+              checkout_session_id: session.id,
+              hint: "Open Checkout Session in Stripe → verify client_reference_id equals subscribers.id. App must redirect with ?client_reference_id=<uuid> on the Payment Link.",
+            }),
+          );
         }
       }
     }
