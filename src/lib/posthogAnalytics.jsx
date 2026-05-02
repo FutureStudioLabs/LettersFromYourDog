@@ -7,7 +7,7 @@ const TOTAL_ONBOARDING_STEPS = 11;
 function virtualCurrentUrl(screen) {
   if (typeof window === "undefined") return "";
   const { origin, pathname, search } = window.location;
-  if (screen === "confirmation" || screen === "privacy") {
+  if (screen === "confirmation" || screen === "privacy" || screen === "terms") {
     return `${origin}${pathname}${search}`;
   }
   if (screen === "onboarding") {

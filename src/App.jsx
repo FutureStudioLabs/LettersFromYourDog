@@ -3,6 +3,7 @@ import DogLandingPage from "./components/DogLandingPage";
 import OnboardingFlow from "./components/OnboardingFlow";
 import PaymentSuccessPage from "./components/PaymentSuccessPage";
 import PrivacyPolicyPage from "./components/PrivacyPolicyPage";
+import TermsOfServicePage from "./components/TermsOfServicePage";
 import { isPostHogConfigured } from "./lib/posthog";
 import { PostHogScreenTracker } from "./lib/posthogAnalytics";
 
@@ -20,22 +21,32 @@ function isPrivacyPolicyPath() {
   return p === "/privacy" || p === "/privacy-policy";
 }
 
+function isTermsOfServicePath() {
+  const p = normalizedPathname();
+  return p === "/terms" || p === "/terms-of-service";
+}
+
 export default function App() {
   const [view, setView] = useState("landing");
   const onConfirmation = isPaymentConfirmationPath();
   const onPrivacy = isPrivacyPolicyPath();
-  const screen = onPrivacy
-    ? "privacy"
-    : onConfirmation
-      ? "confirmation"
-      : view === "onboarding"
-        ? "onboarding"
-        : "landing";
+  const onTerms = isTermsOfServicePath();
+  const screen = onTerms
+    ? "terms"
+    : onPrivacy
+      ? "privacy"
+      : onConfirmation
+        ? "confirmation"
+        : view === "onboarding"
+          ? "onboarding"
+          : "landing";
 
   return (
     <>
       {isPostHogConfigured ? <PostHogScreenTracker screen={screen} /> : null}
-      {onPrivacy ? (
+      {onTerms ? (
+        <TermsOfServicePage />
+      ) : onPrivacy ? (
         <PrivacyPolicyPage />
       ) : onConfirmation ? (
         <PaymentSuccessPage />

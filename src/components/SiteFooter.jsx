@@ -14,7 +14,7 @@ export default function SiteFooter() {
 
         <nav className="site-footer-links" aria-label="Legal links">
           <a href="/privacy">Privacy Policy</a>
-          <a href="#">Terms of Service</a>
+          <a href="/terms">Terms of Service</a>
           <a href="#">Contact Us</a>
         </nav>
 
