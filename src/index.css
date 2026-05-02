@@ -620,6 +620,9 @@ a {
   background: var(--color-card-soft);
   border-bottom: 1px solid rgba(28, 28, 25, 0.06);
   box-shadow: var(--shadow-sm);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .site-top-bar-brand {
