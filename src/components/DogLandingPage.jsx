@@ -175,7 +175,7 @@ export default function DogLandingPage({ onGetStarted }) {
             </p>
 
             <nav className="site-footer-links" aria-label="Legal links">
-              <a href="#">Privacy Policy</a>
+              <a href="/privacy">Privacy Policy</a>
               <a href="#">Terms of Service</a>
               <a href="#">Contact Us</a>
             </nav>

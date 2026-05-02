@@ -2,25 +2,42 @@ import React, { useState } from "react";
 import DogLandingPage from "./components/DogLandingPage";
 import OnboardingFlow from "./components/OnboardingFlow";
 import PaymentSuccessPage from "./components/PaymentSuccessPage";
+import PrivacyPolicyPage from "./components/PrivacyPolicyPage";
 import { isPostHogConfigured } from "./lib/posthog";
 import { PostHogScreenTracker } from "./lib/posthogAnalytics";
 
+function normalizedPathname() {
+  if (typeof window === "undefined") return "/";
+  return window.location.pathname.replace(/\/+$/, "") || "/";
+}
+
 function isPaymentConfirmationPath() {
-  if (typeof window === "undefined") return false;
-  const p = window.location.pathname.replace(/\/+$/, "") || "/";
-  return p === "/confirmation";
+  return normalizedPathname() === "/confirmation";
+}
+
+function isPrivacyPolicyPath() {
+  const p = normalizedPathname();
+  return p === "/privacy" || p === "/privacy-policy";
 }
 
 export default function App() {
   const [view, setView] = useState("landing");
   const onConfirmation = isPaymentConfirmationPath();
-  const screen =
-    onConfirmation ? "confirmation" : view === "onboarding" ? "onboarding" : "landing";
+  const onPrivacy = isPrivacyPolicyPath();
+  const screen = onPrivacy
+    ? "privacy"
+    : onConfirmation
+      ? "confirmation"
+      : view === "onboarding"
+        ? "onboarding"
+        : "landing";
 
   return (
     <>
       {isPostHogConfigured ? <PostHogScreenTracker screen={screen} /> : null}
-      {onConfirmation ? (
+      {onPrivacy ? (
+        <PrivacyPolicyPage />
+      ) : onConfirmation ? (
         <PaymentSuccessPage />
       ) : view === "onboarding" ? (
         <div className="hero-page">
