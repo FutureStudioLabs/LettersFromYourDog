@@ -610,6 +610,62 @@ a {
   object-position: center 30%;
 }
 
+/* ============= Site top bar (shared) ============= */
+
+.site-top-bar {
+  width: 100%;
+  flex-shrink: 0;
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-card-soft);
+  border-bottom: 1px solid rgba(28, 28, 25, 0.06);
+  box-shadow: var(--shadow-sm);
+}
+
+.site-top-bar-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  text-decoration: none;
+  color: inherit;
+}
+
+.site-top-bar-title {
+  font-family: var(--font-script);
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 400;
+  color: var(--color-script);
+}
+
+.site-top-bar-icon {
+  width: 22px;
+  height: 22px;
+  color: var(--color-script);
+  flex-shrink: 0;
+}
+
+.site-top-bar-brand:hover .site-top-bar-title {
+  color: var(--color-primary-strong);
+}
+
+.site-top-bar-brand:hover .site-top-bar-icon {
+  color: var(--color-primary-strong);
+}
+
+.site-top-bar-brand:focus-visible {
+  outline: 2px solid var(--color-primary-strong);
+  outline-offset: 4px;
+  border-radius: var(--radius-sm);
+}
+
+.landing-main {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 /* ============= Onboarding: dog name (step 1) ============= */
 
 .visually-hidden {
@@ -1685,14 +1741,62 @@ a {
   outline-offset: 3px;
 }
 
-/* ============= Legal pages (/privacy) ============= */
+.page-with-chrome {
+  padding: 0;
+  align-items: stretch;
+}
 
-.legal-page {
+.page-with-chrome-stack {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
   min-height: 100dvh;
-  background: var(--color-page);
-  padding: var(--space-5) var(--space-5) var(--space-8);
-  color: var(--color-heading);
+  width: 100%;
+}
+
+.page-with-chrome-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  width: 100%;
+  padding: var(--space-5);
+}
+
+.page-with-chrome .payment-success-screen {
+  min-height: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: transparent;
+}
+
+/* ============= Legal pages (/privacy) ============= */
+
+.legal-page--chrome {
+  padding: 0;
+  align-items: stretch;
+}
+
+.legal-page-stack {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
+}
+
+.legal-page-main {
+  flex: 1;
+  width: 100%;
+  padding: var(--space-5) var(--space-5) var(--space-6);
 }
 
 .legal-page-inner {
@@ -1703,27 +1807,6 @@ a {
 
 .legal-page-header {
   margin-bottom: var(--space-6);
-}
-
-.legal-page-back {
-  display: inline-block;
-  margin-bottom: var(--space-5);
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--color-primary-strong);
-  text-decoration: none;
-  letter-spacing: -0.2px;
-}
-
-.legal-page-back:hover {
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.legal-page-back:focus-visible {
-  outline: 2px solid var(--color-primary-strong);
-  outline-offset: 3px;
-  border-radius: var(--radius-sm);
 }
 
 .legal-page-title {

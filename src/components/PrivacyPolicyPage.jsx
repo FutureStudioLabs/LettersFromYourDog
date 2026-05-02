@@ -1,5 +1,8 @@
 import React, { useEffect } from "react";
 
+import SiteFooter from "./SiteFooter";
+import SiteTopBar from "./SiteTopBar";
+
 const SUPPORT_EMAIL = "hello@lettersfromyourdog.com";
 const SITE = "Letters From Your Dog";
 
@@ -15,12 +18,12 @@ export default function PrivacyPolicyPage() {
   }, []);
 
   return (
-    <div className="legal-page">
-      <div className="legal-page-inner">
+    <main className="hero-page legal-page legal-page--chrome">
+      <div className="page-shell legal-page-stack">
+        <SiteTopBar />
+        <div className="legal-page-main">
+          <div className="legal-page-inner">
         <header className="legal-page-header">
-          <a href="/" className="legal-page-back">
-            ← Back to home
-          </a>
           <h1 className="legal-page-title">Privacy Policy</h1>
           <p className="legal-page-meta">
             <strong>{SITE}</strong>
@@ -190,7 +193,10 @@ export default function PrivacyPolicyPage() {
             </p>
           </section>
         </article>
+          </div>
+        </div>
+        <SiteFooter />
       </div>
-    </div>
+    </main>
   );
 }

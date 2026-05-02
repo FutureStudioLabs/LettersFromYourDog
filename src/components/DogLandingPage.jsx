@@ -1,8 +1,9 @@
 import React from "react";
 import { CaretDown, HandHeart, PawPrint } from "@phosphor-icons/react";
 
-import dogsFooterStrip from "../assets/figma/dogs-footer-strip.png";
 import handshakeCta from "../assets/figma/handshake-cta.png";
+import SiteFooter from "./SiteFooter";
+import SiteTopBar from "./SiteTopBar";
 import heroMainImage from "../assets/figma/gemini-generated-image.png";
 import letterWithBookmark from "../assets/figma/dim.jpeg";
 import photoToPostcardCard from "../assets/figma/pim.jpeg";
@@ -47,16 +48,11 @@ export default function DogLandingPage({ onGetStarted }) {
   };
 
   return (
-    <main className="hero-page">
-      <div className="page-shell">
+    <main className="hero-page page-with-chrome">
+      <div className="page-shell page-with-chrome-stack">
+        <SiteTopBar />
+        <div className="landing-main">
         <section className="hero-card">
-          <header className="hero-brand" aria-label="Letters from Your Dog">
-            <p>
-              Letters from Your Dog
-              <PawPrint aria-hidden="true" className="hero-brand-icon" weight="fill" />
-            </p>
-          </header>
-
           <div className="hero-copy">
             <h1>Your dog sends you a letter every month.</h1>
             <p>
@@ -167,28 +163,9 @@ export default function DogLandingPage({ onGetStarted }) {
           </div>
         </section>
 
-        <footer className="site-footer" aria-label="Footer">
-          <div className="site-footer-card">
-            <p className="site-footer-brand">
-              Letters from Your Dog
-              <PawPrint aria-hidden="true" className="site-footer-brand-icon" weight="fill" />
-            </p>
+        </div>
 
-            <nav className="site-footer-links" aria-label="Legal links">
-              <a href="/privacy">Privacy Policy</a>
-              <a href="#">Terms of Service</a>
-              <a href="#">Contact Us</a>
-            </nav>
-
-            <p className="site-footer-copy">
-              © 2024 The Analog Editorial — Letters From Your Dog. All Rights Reserved.
-            </p>
-
-            <figure className="site-footer-image-wrap">
-              <img src={dogsFooterStrip} alt="A group of happy dogs" />
-            </figure>
-          </div>
-        </footer>
+        <SiteFooter />
       </div>
     </main>
   );
