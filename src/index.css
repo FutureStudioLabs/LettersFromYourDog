@@ -104,7 +104,8 @@ a {
 }
 
 .page-shell {
-  width: 100%;
+  box-sizing: border-box;
+  width: min(100%, var(--max-page));
   max-width: var(--max-page);
   display: flex;
   flex-direction: column;
@@ -1743,7 +1744,7 @@ a {
 
 .page-with-chrome {
   padding: 0;
-  align-items: stretch;
+  align-items: center;
 }
 
 .page-with-chrome-stack {
@@ -1752,7 +1753,8 @@ a {
   flex-direction: column;
   min-height: 100vh;
   min-height: 100dvh;
-  width: 100%;
+  width: min(100%, var(--max-page));
+  max-width: var(--max-page);
 }
 
 .page-with-chrome-main {
@@ -1781,7 +1783,12 @@ a {
 
 .legal-page--chrome {
   padding: 0;
-  align-items: stretch;
+  align-items: center;
+}
+
+.legal-page--chrome .page-shell.legal-page-stack {
+  width: min(100%, 560px);
+  max-width: 560px;
 }
 
 .legal-page-stack {
@@ -1790,7 +1797,8 @@ a {
   flex-direction: column;
   min-height: 100vh;
   min-height: 100dvh;
-  width: 100%;
+  width: min(100%, var(--max-page));
+  max-width: var(--max-page);
 }
 
 .legal-page-main {
