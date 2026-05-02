@@ -3,7 +3,7 @@ import { ArrowLeft, ArrowRight, CameraPlus, Check } from "@phosphor-icons/react"
 
 import customPostcardImage from "../assets/figma/nim.jpeg";
 import letterValueHero from "../assets/figma/content-image.png";
-import keepsakeHeroImage from "../assets/figma/keepsake.png";
+import keepsakeHeroImage from "../assets/figma/dim.jpeg";
 /* Hero for step 10 only — “Reserve My First Letter” (not timeline / Save My Spot) */
 import reserveMyFirstLetterHero from "../assets/figma/desktop 1.jpeg";
 import {
