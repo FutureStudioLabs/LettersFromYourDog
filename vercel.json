@@ -9,6 +9,10 @@
     { "source": "/terms", "destination": "/index.html" },
     { "source": "/terms/", "destination": "/index.html" },
     { "source": "/terms-of-service", "destination": "/index.html" },
-    { "source": "/terms-of-service/", "destination": "/index.html" }
+    { "source": "/terms-of-service/", "destination": "/index.html" },
+    { "source": "/contact", "destination": "/index.html" },
+    { "source": "/contact/", "destination": "/index.html" },
+    { "source": "/contact-us", "destination": "/index.html" },
+    { "source": "/contact-us/", "destination": "/index.html" }
   ]
 }

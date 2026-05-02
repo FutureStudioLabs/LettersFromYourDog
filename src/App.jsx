@@ -4,6 +4,7 @@ import OnboardingFlow from "./components/OnboardingFlow";
 import PaymentSuccessPage from "./components/PaymentSuccessPage";
 import PrivacyPolicyPage from "./components/PrivacyPolicyPage";
 import TermsOfServicePage from "./components/TermsOfServicePage";
+import ContactPage from "./components/ContactPage";
 import { isPostHogConfigured } from "./lib/posthog";
 import { PostHogScreenTracker } from "./lib/posthogAnalytics";
 
@@ -26,25 +27,35 @@ function isTermsOfServicePath() {
   return p === "/terms" || p === "/terms-of-service";
 }
 
+function isContactPath() {
+  const p = normalizedPathname();
+  return p === "/contact" || p === "/contact-us";
+}
+
 export default function App() {
   const [view, setView] = useState("landing");
   const onConfirmation = isPaymentConfirmationPath();
   const onPrivacy = isPrivacyPolicyPath();
   const onTerms = isTermsOfServicePath();
-  const screen = onTerms
-    ? "terms"
-    : onPrivacy
-      ? "privacy"
-      : onConfirmation
-        ? "confirmation"
-        : view === "onboarding"
-          ? "onboarding"
-          : "landing";
+  const onContact = isContactPath();
+  const screen = onContact
+    ? "contact"
+    : onTerms
+      ? "terms"
+      : onPrivacy
+        ? "privacy"
+        : onConfirmation
+          ? "confirmation"
+          : view === "onboarding"
+            ? "onboarding"
+            : "landing";
 
   return (
     <>
       {isPostHogConfigured ? <PostHogScreenTracker screen={screen} /> : null}
-      {onTerms ? (
+      {onContact ? (
+        <ContactPage />
+      ) : onTerms ? (
         <TermsOfServicePage />
       ) : onPrivacy ? (
         <PrivacyPolicyPage />
