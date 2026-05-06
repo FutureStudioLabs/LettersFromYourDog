@@ -7,6 +7,12 @@ import { supabase } from "./supabaseClient";
  * @param {{ subject: string; text?: string; html?: string; template_key?: string }} payload
  */
 export async function sendTransactionalEmail(payload) {
+  if (!supabase) {
+    throw new Error(
+      "Missing VITE_SUPABASE_URL or VITE_SUPABASE_PUBLISHABLE_KEY. Add them to .env and restart the dev server.",
+    );
+  }
+
   const { subject, text, html, template_key } = payload;
   const { data, error } = await supabase.functions.invoke("send-transactional-email", {
     body: {

@@ -62,39 +62,37 @@ function escapeHtml(s: string): string {
 function buildWelcomePlainText(firstName: string): string {
   return `Hi ${firstName},
 
-Your spot is officially saved — and we're so happy you're one of our first 100.
+You're one of our first 100 — and we're so happy you're here.
 
-Here's exactly what happens next so you know what to expect:
+Your $11 payment has been processed and your spot is confirmed.
 
-Today: Nothing is charged. Your spot is simply reserved.
+Here's exactly what happens next:
 
-Before May 1: We'll email you with everything you need to get started — including how to tell us about your dog.
+Mid May: We'll send you a few simple questions about your month with your dog. This is how we write your letter — the funnier and more specific, the better.
 
-May 1: Your first month begins and you'll be charged $11. If you change your mind before then, just cancel and you won't be charged a thing.
+End of May: Your first letter and custom portrait are mailed to you. Allow 1–2 weeks for delivery within the US.
 
-During May: We'll ask you a few simple questions about your month with your dog. This is how we write the letter.
+After that: $18/month — cancel any time by replying to this email.
 
-End of May: Your first letter is mailed. Allow 1–2 weeks for delivery within the US.
-
-If you have any questions at all, just reply to this email. We read every one.
+If you have any questions, just reply here. We read every one.
 
 We can't wait to write your first letter.
 
-With love, Letters From Your Dog 🐾`;
+With love,
+Letters From Your Dog 🐾`;
 }
 
 function buildWelcomeHtml(firstName: string): string {
   const fn = escapeHtml(firstName);
   const paras: string[] = [
     `Hi ${fn},`,
-    `Your spot is officially saved — and we're so happy you're one of our first 100.`,
-    `<strong>Here's exactly what happens next so you know what to expect:</strong>`,
-    `<strong>Today:</strong> Nothing is charged. Your spot is simply reserved.`,
-    `<strong>Before May 1:</strong> We'll email you with everything you need to get started — including how to tell us about your dog.`,
-    `<strong>May 1:</strong> Your first month begins and you'll be charged $11. If you change your mind before then, just cancel and you won't be charged a thing.`,
-    `<strong>During May:</strong> We'll ask you a few simple questions about your month with your dog. This is how we write the letter.`,
-    `<strong>End of May:</strong> Your first letter is mailed. Allow 1–2 weeks for delivery within the US.`,
-    `If you have any questions at all, just reply to this email. We read every one.`,
+    `You're one of our first 100 — and we're so happy you're here.`,
+    `Your $11 payment has been processed and your spot is confirmed.`,
+    `<strong>Here's exactly what happens next:</strong>`,
+    `<strong>Mid May:</strong> We'll send you a few simple questions about your month with your dog. This is how we write your letter — the funnier and more specific, the better.`,
+    `<strong>End of May:</strong> Your first letter and custom portrait are mailed to you. Allow 1–2 weeks for delivery within the US.`,
+    `<strong>After that:</strong> $18/month — cancel any time by replying to this email.`,
+    `If you have any questions, just reply here. We read every one.`,
     `We can't wait to write your first letter.`,
     `With love,<br/>Letters From Your Dog 🐾`,
   ];

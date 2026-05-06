@@ -50,7 +50,7 @@ function explainError(err) {
 export async function ensureSubscriberForOnboarding() {
   const url = import.meta.env.VITE_SUPABASE_URL?.trim();
   const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY?.trim();
-  if (!url || !key) {
+  if (!url || !key || !supabase) {
     throw new Error(
       "Missing VITE_SUPABASE_URL or VITE_SUPABASE_PUBLISHABLE_KEY. Add them to .env and restart the dev server.",
     );
@@ -129,6 +129,12 @@ export async function uploadDogProfilePhoto(subscriberId, file) {
     throw new Error("No file to upload");
   }
 
+  if (!supabase) {
+    throw new Error(
+      "Missing VITE_SUPABASE_URL or VITE_SUPABASE_PUBLISHABLE_KEY. Add them to .env and restart the dev server.",
+    );
+  }
+
   const {
     data: { session },
     error: sessionErr,
@@ -164,6 +170,12 @@ export async function uploadDogProfilePhoto(subscriberId, file) {
 }
 
 export async function upsertDogProfile(subscriberId, fields) {
+  if (!supabase) {
+    throw new Error(
+      "Missing VITE_SUPABASE_URL or VITE_SUPABASE_PUBLISHABLE_KEY. Add them to .env and restart the dev server.",
+    );
+  }
+
   const { dogName, breed, ageRange, traits, memorableMoment, photoPath } = fields;
 
   const row = {
